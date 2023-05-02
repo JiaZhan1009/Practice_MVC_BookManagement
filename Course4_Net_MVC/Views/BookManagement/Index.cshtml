@@ -1,0 +1,97 @@
+﻿@model bookModel.BookViewModel
+@using PagedList.Mvc;
+
+@{ ViewBag.Title = "圖書管理系統"; }
+
+@section Style{
+    <link href="~/Content/css/bookStyle.css" rel="stylesheet" />
+}
+
+<div class="container">
+    <div class="tool-container">
+        <h3>搜尋書籍</h3>
+        <div class="form-horizontal row" style="margin-bottom: 25px;">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Book.BookName, htmlAttributes: new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(model => model.Book.BookName, htmlAttributes: new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Book.BookClassName, htmlAttributes: new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(model => model.Book.BookClassId, (List<SelectListItem>)ViewBag.BookClasses, "ALL", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Book.UserEName, htmlAttributes: new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(model => model.Book.UserId, (List<SelectListItem>)ViewBag.Members, "ALL", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Book.BookStatusDesc, htmlAttributes: new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(model => model.Book.BookStatusId, (List<SelectListItem>)ViewBag.BookStatuses, "ALL", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-10">
+                        <button id="search" class="btn btn-default">搜尋</button>
+                        <button id="clear" class="btn btn-default">清除</button>
+                        @Html.ActionLink("新增", "Insert", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="searchResult">
+        @{ Html.RenderPartial("_SearchResult", Model);}
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            var pageNumber = @(Model.PageNumber);
+
+            $("#clear").on("click", function (e) {
+                $("#Book_BookName").val("");
+                $("#Book_BookClassId").val("");
+                $("#Book_UserId").val("");
+                $("#Book_BookStatusId").val("");
+
+                search();
+            });
+
+            function search() {
+                var data = {
+                    BookName: $('#Book_BookName').val(),
+                    BookClassId: $('#Book_BookClassId').val(),
+                    UserId: $('#Book_UserId').val(),
+                    BookStatusId: $("#Book_BookStatusId").val(),
+                    page: pageNumber
+                };
+
+                $.post('@Url.Action("Search", "BookManagement")', data)
+                    .done(function (result) {
+                        $('#searchResult').html(result);
+                    });
+            }
+            $('#search').on("click", search);
+
+            $(document).on('click', '#pager a', function () {
+                pageNumber = parseInt($(this).text());
+                search();
+                return false;
+            });
+        });
+    </script>
+}
+
+

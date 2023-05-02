@@ -1,0 +1,172 @@
+﻿@model bookModel.Book
+@{
+    ViewBag.Title = "書籍明細";
+}
+
+@section Style{
+    <link href="~/Content/css/bookStyle.css" rel="stylesheet" />
+}
+
+@*@using (Ajax.BeginForm("Detail", "BookManagement", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "editResult",
+        OnFailure = "onError"
+    }))*@
+
+@using (Html.BeginForm("Detail", "BookManagement", FormMethod.Post, new { id = "DetailForm" }))
+{
+    <div class="container">
+        <div class="edit-container" id="editResult">
+            <div class="form-horizontal row">
+                @Html.HiddenFor(model => model.BookId)
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="required">*</span>
+                            @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(model => model.BookName, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BookName, "", htmlAttributes: new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="required">*</span>
+                            @Html.LabelFor(model => model.BookAuthor, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(model => model.BookAuthor, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BookAuthor, "", htmlAttributes: new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="required">*</span>
+                            @Html.LabelFor(model => model.BookPublisher, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(model => model.BookPublisher, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BookPublisher, "", htmlAttributes: new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="required">*</span>
+                            @Html.LabelFor(model => model.BookNote, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.TextAreaFor(model => model.BookNote, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BookNote, "", htmlAttributes: new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="required">*</span>
+                            @Html.LabelFor(model => model.BookBoughtDate, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(model => model.BookBoughtDate, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "form-control", @type = "Date" })
+                            @Html.ValidationMessageFor(model => model.BookBoughtDate, "", htmlAttributes: new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="required">*</span>
+                            @Html.LabelFor(model => model.BookClassName, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.DropDownListFor(model => model.BookClassId, (List<SelectListItem>)ViewBag.BookClasses, "請選擇", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BookClassId, "", htmlAttributes: new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <span class="required">*</span>
+                            @Html.LabelFor(model => model.BookStatusDesc, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.DropDownListFor(model => model.BookStatusId, (List<SelectListItem>)ViewBag.BookStatuses, "請選擇", htmlAttributes: new { @class = "form-control", @id = "bookStatusId" })
+                            @Html.ValidationMessageFor(model => model.BookStatusId, "", htmlAttributes: new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            @Html.LabelFor(model => model.UserEName, htmlAttributes: new { @class = "control-label " })
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.DropDownListFor(model => model.UserId, (List<SelectListItem>)ViewBag.Members, "請選擇", htmlAttributes: new { @class = "form-control", @id = "userId" })
+                            @*@Html.ValidationMessageFor(model => model.UserId, "", htmlAttributes: new { @class = "text-danger" })*@
+                            <span id="statusIdDanger" style="color: #a94442;">請選擇一個有效的選項</span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-5"></div>
+                        <div class="col-sm-7" style="padding-left: 110px;">
+                            <button id="save" class="btn btn-default">存檔</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (TempData["Message"] != null)
+{
+    <script>
+        $("#dialog_result").kendoDialog({
+            title: "圖書管理",
+            content: "@TempData["Message"]",
+            actions: [{ text: "確定" }],
+            themeColor: "dark",
+            animation: {
+                open: {
+                    effects: "fade:in"
+                },
+                close: {
+                    effects: "fade:out"
+                }
+            }
+        }).data("kendoDialog").open();
+
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        let selStatusId = $("#bookStatusId");
+        let selUserId = $("#userId");
+        ValidationStatus();
+        $("#statusIdDanger").hide();
+
+        if ("@TempData["Message"]" == "書籍狀態為已借出但未選擇借閱人！") {
+            $("#statusIdDanger").show();
+        } else {
+            $("#statusIdDanger").hide();
+        }
+        selStatusId.on("change", ValidationStatus);
+        function ValidationStatus() {
+            if (selStatusId.val() == "A" || selStatusId.val() == "U") {
+                selUserId.val("");
+                selUserId.prop("disabled", true);
+                selUserId.attr("data-val", false);
+            } else {
+                selUserId.prop("disabled", false);
+                selUserId.attr("data-val", true);
+            }
+        }
+    });
+    //function onError() {
+    //    alert("無法送出, 請檢查是否有類似<br>、<script>..等標籤");
+    //}
+</script>

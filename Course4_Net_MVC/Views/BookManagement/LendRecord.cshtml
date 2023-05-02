@@ -1,0 +1,39 @@
+﻿@model bookModel.BookViewModel
+
+@{
+    ViewBag.Title = "借閱記錄";
+}
+
+@section Style{
+    <link href="~/Content/css/bookStyle.css" rel="stylesheet" />
+}
+
+<div class="container">
+
+    @if (@Model.LendRecords.Count > 0)
+    {
+        <h4 style="margin-top: 35px;">書名：@Model.LendRecords[0].BookName 的借閱記錄</h4>
+    }
+    else
+    {
+        <h4 style="margin-top: 35px;">無任何借閱記錄</h4>
+    }
+
+    <table class="table table-hover">
+        <tr>
+            <th>借閱日期</th>
+            <th>借閱人員編號</th>
+            <th>英文姓名</th>
+            <th>中文姓名</th>
+        </tr>
+        @foreach (var item in Model.LendRecords)
+        {
+            <tr>
+                <td>@item.BookLendDate.ToString("yyyy/MM/dd")</td>
+                <td>@item.UserId</td>
+                <td>@item.UserEName</td>
+                <td>@item.UserCName</td>
+            </tr>
+        }
+    </table>
+</div>

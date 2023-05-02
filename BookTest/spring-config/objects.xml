@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net">
+
+	<object id="BookManagementControllerTest"  type="BookTest.BookManagementControllerTest, BookTest" singleton="false">
+		<property name="codeService" ref="CodeService" />
+		<property name="bookService" ref="bookService" />
+	</object>
+
+	<object id="CodeService" type="bookService.CodeService, bookService">
+		<property name="codeDao" ref="CodeDao" />
+	</object>
+
+	<object id="bookService" type="bookService.BookService, bookService">
+		<property name="bookDao" ref="BookDao" />
+	</object>
+
+	<!--<object id="CodeDao" type="bookDao.CodeDao, bookDao"/>
+	<object id="BookDao" type="bookDao.BookDao, bookDao"/>-->
+	
+	<object id="BookDao" type="bookDao.BookTestDao, bookDao"/>
+	<object id="CodeDao" type="bookDao.CodeTestDao, bookDao"/>
+	
+	
+	
+</objects>

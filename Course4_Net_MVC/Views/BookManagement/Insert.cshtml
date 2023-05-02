@@ -1,0 +1,99 @@
+﻿@model bookModel.InsertBook
+@{
+    ViewBag.Title = "建立書籍";
+}
+
+@section Style{
+    <link href="~/Content/css/bookStyle.css" rel="stylesheet" />
+}
+
+<h2 style="margin-top: 40px;">建立書籍</h2>
+
+@using (Html.BeginForm("Insert", "BookManagement", FormMethod.Post, new { id = "InsertForm" }))
+{
+    <div class="container">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-1">
+                    <span class="required">*</span>
+                    @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-sm-11">
+                    @Html.TextBoxFor(model => model.BookName, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BookName, "", htmlAttributes: new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1">
+                    <span class="required">*</span>
+                    @Html.LabelFor(model => model.BookAuthor, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-sm-11">
+                    @Html.TextBoxFor(model => model.BookAuthor, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BookAuthor, "", htmlAttributes: new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1">
+                    <span class="required">*</span>
+                    @Html.LabelFor(model => model.BookPublisher, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-sm-11">
+                    @Html.TextBoxFor(model => model.BookPublisher, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BookPublisher, "", htmlAttributes: new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1">
+                    <span class="required">*</span>
+                    @Html.LabelFor(model => model.BookNote, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-sm-11">
+                    @Html.TextAreaFor(model => model.BookNote, htmlAttributes: new { @class = "control-form" })
+                    @Html.ValidationMessageFor(model => model.BookNote, "", htmlAttributes: new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1">
+                    <span class="required">*</span>
+                    @Html.LabelFor(model => model.BookBoughtDate, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-sm-11">
+                    @Html.TextBoxFor(model => model.BookBoughtDate, htmlAttributes: new { @class = "control-form", @type = "Date" })
+                    @Html.ValidationMessageFor(model => model.BookBoughtDate, "", htmlAttributes: new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1">
+                    <span class="required">*</span>
+                    @Html.LabelFor(model => model.BookClassId, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-sm-11">
+                    @Html.DropDownListFor(model => model.BookClassId, (List<SelectListItem>)ViewBag.BookClasses, "請選擇", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BookClassId, "", htmlAttributes: new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-11">
+                    <input class="btn btn-default" type="submit" value="存檔" id="submit" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@if (TempData["Message"] != null)
+{
+    <script>
+        $("#dialog_result").kendoDialog({
+            title: "圖書管理",
+            content: "@TempData["Message"]",
+            actions: [{ text: "確定" }],
+            themeColor: "dark"
+        }).data("kendoDialog").open();
+    </script>
+}
+

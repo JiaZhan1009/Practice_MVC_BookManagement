@@ -1,0 +1,19 @@
+.container {
+    width: auto;
+    margin-top: 35px;
+}
+
+.required {
+    color: red;
+}
+
+.kendo-dialog-content {
+    font-size: 17px;
+}
+
+.k-dialog-titlebar {
+    color: white;
+    background-color: #757575;
+    padding-block: 0px;
+    margin-bottom: 18px;
+}

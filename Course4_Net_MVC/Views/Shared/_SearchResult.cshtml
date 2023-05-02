@@ -1,0 +1,115 @@
+﻿@model bookModel.BookViewModel
+@using PagedList.Mvc;
+
+<style>
+    .k-dialog-alert {
+        border: 2px solid #ff0000;
+        background-color: #ffecec;
+        color: #ff0000;
+    }
+</style>
+<div class="table-container">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr class="row">
+                <th class="col-sm-2">圖書類別</th>
+                <th class="col-sm-4">書名</th>
+                <th class="col-sm-1">購書日期</th>
+                <th class="col-sm-1">借閱狀態</th>
+                <th class="col-sm-1">借閱人</th>
+                <th class="col-sm-3">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model.PagedBooks)
+            {
+                <tr class="row" data-book-id="@book.BookId">
+                    <td class="col-sm-2">@book.BookClassName</td>
+                    <td class="col-sm-4">@Html.ActionLink(book.BookName, "Detail", new { bookId = book.BookId }, new { @style = "text-decoration: none; color: black;" })</td>
+                    <td class="col-sm-1">@book.BookBoughtDate.ToString("yyyy/MM/dd")</td>
+                    <td class="col-sm-1">@book.BookStatusDesc</td>
+                    <td class="col-sm-1">@book.UserEName</td>
+                    <td class="col-sm-3">
+                        <div>
+                            @Html.ActionLink("借閱記錄", "LendRecord", new { bookId = book.BookId }, new { @class = "btn btn-default" })
+                            @Html.ActionLink("編輯", "Detail", new { bookId = book.BookId }, new { @class = "btn btn-default" })
+                            <div class="btn btn-default delete" id="@book.BookStatusId">刪除</div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>Page @(Model.PagedBooks.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @(Model.PagedBooks.PageCount)</div>
+
+    <div id="pager">
+        @Html.PagedListPager(Model.PagedBooks, page => Url.Action("Index", new { page }))
+    </div>
+
+    <div id="dialog"></div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        let tr;
+
+        $(".delete").on("click", function (e) {
+            e.preventDefault();
+            let selStatusId = e.target.id;
+
+            if (selStatusId == 'B' || selStatusId == 'C') {
+                $("#dialog_result").kendoDialog({
+                    width: "300px",
+                    title: "圖書管理",
+                    content: `此書籍狀態為被借出不可執行刪除動作<br>請確定書籍已完成借入後再執行。`,
+                    actions: [{ text: "確定" }],
+                    themeColor: "dark"
+                }).data("kendoDialog").open();
+
+            } else {
+                tr = $(e.target).closest("tr");
+                let bookName = $(tr).children()[1].textContent;
+
+                destroyDialog.content(`您確定要刪除書名：${bookName}的書籍嗎？`);
+                destroyDialog.open();
+            }
+        });
+
+        var destroyDialog = $("#dialog").kendoDialog({
+            visible: false,
+            width: "300px",
+            title: "圖書管理",
+            actions: [{
+                text: "確定",
+                primary: true,
+                action: function () {
+                    bookId = tr.data("book-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/BookManagement/Destroy",
+                        data: `bookId=${bookId}`,
+                        success: function (result) {
+                            $(tr).remove();
+                            $("#dialog_result").kendoDialog({
+                                width: "250px",
+                                title: "圖書管理",
+                                content: result.message,
+                                actions: [{ text: 'OK' }]
+                            }).data("kendoDialog").open();
+                        }
+                    });
+                }
+            },
+            { text: "取消" }],
+            animation: {
+                open: {
+                    effects: "fade:in"
+                },
+                close: {
+                    effects: "fade:out"
+                }
+            }
+        }).data("kendoDialog");
+    });
+</script>
